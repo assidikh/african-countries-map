@@ -14,14 +14,15 @@ async function loadCountries() {
     const countries = await res.json();
 
     // Trier alphabétiquement
-    countries.sort((a,b) => a.name.common.localeCompare(b.name.common));
+    //translations.fra.comm : c'est le nom, traduit en français, de chaque pays
+    countries.sort((a,b) => a.translations.fra.common.localeCompare(b.translations.fra.common));
 
     // Remplir le select
     countrySelect.innerHTML = '<option value="">-- Sélectionner un pays --</option>';
     countries.forEach(c => {
       const opt = document.createElement("option");
       opt.value = c.cca3; // code ISO
-      opt.textContent = c.name.common;
+      opt.textContent = c.translations.fra.common;
       opt.dataset.capital = c.capital ? c.capital[0] : "N/A";
       opt.dataset.population = c.population;
       opt.dataset.currency = c.currencies ? Object.keys(c.currencies).join(", ") : "N/A";
