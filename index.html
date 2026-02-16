@@ -6,20 +6,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Carte interactive des pays africains</h1>
+  <div class="container">
+    <h1>Carte interactive des pays africains</h1>
 
-  <label for="country">Sélectionner un pays :</label>
-  <select id="country">
-    <option value="">-- Chargement des pays... --</option>
-  </select>
+    <label for="country">Sélectionner un pays</label>
+    <select id="country"></select>
 
-  <div id="info" class="hidden">
-    <img id="flag" src="" alt="Drapeau du pays" width="150">
-    <p>Capitale : <span id="capital"></span></p>
-    <p>Population : <span id="population"></span></p>
-    <p>Monnaie : <span id="currency"></span></p>
+    <div id="info" class="card hidden">
+      <img id="flag" alt="">
+      <p><strong>Capitale :</strong> <span id="capital"></span></p>
+      <p><strong>Population :</strong> <span id="population"></span></p>
+      <p><strong>Monnaie :</strong> <span id="currency"></span></p>
+    </div>
   </div>
 
   <script src="script.js"></script>
 </body>
+
 </html>
