@@ -1,14 +1,14 @@
 console.log("Script chargé");
 
-const countrySelect = document.getElementById("country");
+const searchInput = document.getElementById("search");
+const countryList = document.getElementById("country-list");
+
 const infoDiv = document.getElementById("info");
 const flagImg = document.getElementById("flag");
 const capitalSpan = document.getElementById("capital");
 const populationSpan = document.getElementById("population");
 const currencySpan = document.getElementById("currency");
-const searchInput = document.getElementById("search");
 
-// Pour stocker tous les pays dans un tableau
 let allCountries = [];
 
 // Charger les pays africains
@@ -27,65 +27,60 @@ async function loadCountries() {
     // Stocker TOUS les pays
     allCountries = countries;
 
-    // Affichage initial
-    displayCountries(allCountries);
-
   } catch (err) {
     console.error("Erreur chargement pays :", err);
   }
 }
 
-// Fonction pour afficher les pays 
-function displayCountries(countries) {
-  countrySelect.innerHTML =
-    '<option value="">-- Sélectionner un pays --</option>';
+// Affichage des infos pays
+function showCountryInfo(country) {
+  flagImg.src = country.flags?.png || "";
+  flagImg.alt = `Drapeau de ${country.translations.fra.common}`;
 
-  countries.forEach(c => {
-    const opt = document.createElement("option");
+  capitalSpan.textContent = country.capital
+    ? country.capital[0]
+    : "N/A";
 
-    opt.value = c.cca3;
-    opt.textContent = c.translations.fra.common;
+  populationSpan.textContent = country.population.toLocaleString();
 
-    opt.dataset.capital = c.capital ? c.capital[0] : "N/A";
-    opt.dataset.population = c.population;
-    opt.dataset.currency = c.currencies
-      ? Object.keys(c.currencies).join(", ")
-      : "N/A";
-    opt.dataset.flag = c.flags?.png || "";
+  currencySpan.textContent = country.currencies
+    ? Object.keys(country.currencies).join(", ")
+    : "N/A";
 
-    countrySelect.appendChild(opt);
-  });
+  infoDiv.classList.remove("hidden");
 }
 
 loadCountries();
 
-// Afficher infos quand pays sélectionné
-countrySelect.addEventListener("change", () => {
-  const selected = countrySelect.selectedOptions[0];
-  if (!selected.value) {
-    infoDiv.classList.add("hidden");
+// Recherche en tmps réel
+searchInput.addEventListener("input", () => {
+  const value = searchInput.value.toLowerCase();
+
+  // Nettoyer la liste
+  countryList.innerHTML = "";
+
+  if (value === "") {
+    countryList.classList.add("hidden");
     return;
   }
 
-  flagImg.src = selected.dataset.flag;
-  flagImg.alt = `Drapeau de ${selected.textContent}`;
-  capitalSpan.textContent = selected.dataset.capital;
-  populationSpan.textContent = Number(selected.dataset.population).toLocaleString();
-  currencySpan.textContent = selected.dataset.currency;
-
-  infoDiv.classList.remove("hidden");
-});
-
-
-searchInput.addEventListener("input", () => {
-  const searchValue = searchInput.value.toLowerCase();
-
-  const filteredCountries = allCountries.filter(country =>
-    country.translations.fra.common
-      .toLowerCase()
-      .includes(searchValue)
+  const filtered = allCountries.filter(c =>
+    c.translations.fra.common.toLowerCase().includes(value)
   );
 
-  displayCountries(filteredCountries);
+  filtered.forEach(country => {
+    const li = document.createElement("li");
+    li.textContent = country.translations.fra.common;
+
+    li.addEventListener("click", () => {
+      showCountryInfo(country);
+      countryList.classList.add("hidden");
+      searchInput.value = country.translations.fra.common;
+    });
+
+    countryList.appendChild(li);
+  });
+
+  countryList.classList.remove("hidden");
 });
 
