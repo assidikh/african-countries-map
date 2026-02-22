@@ -6,6 +6,10 @@ const flagImg = document.getElementById("flag");
 const capitalSpan = document.getElementById("capital");
 const populationSpan = document.getElementById("population");
 const currencySpan = document.getElementById("currency");
+const searchInput = document.getElementById("search");
+
+// Pour stocker tous les pays dans un tableau
+let allCountries = [];
 
 // Charger les pays africains
 async function loadCountries() {
@@ -13,25 +17,44 @@ async function loadCountries() {
     const res = await fetch("https://restcountries.com/v3.1/region/africa");
     const countries = await res.json();
 
-    // Trier alphabétiquement
-    //translations.fra.comm : c'est le nom, traduit en français, de chaque pays
-    countries.sort((a,b) => a.translations.fra.common.localeCompare(b.translations.fra.common));
+    // Tri alphabétique en français
+    countries.sort((a, b) =>
+      a.translations.fra.common.localeCompare(
+        b.translations.fra.common
+      )
+    );
 
-    // Remplir le select
-    countrySelect.innerHTML = '<option value="">-- Sélectionner un pays --</option>';
-    countries.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.cca3; // code ISO
-      opt.textContent = c.translations.fra.common;
-      opt.dataset.capital = c.capital ? c.capital[0] : "N/A";
-      opt.dataset.population = c.population;
-      opt.dataset.currency = c.currencies ? Object.keys(c.currencies).join(", ") : "N/A";
-      opt.dataset.flag = c.flags?.png || "";
-      countrySelect.appendChild(opt);
-    });
+    // Stocker TOUS les pays
+    allCountries = countries;
+
+    // Affichage initial
+    displayCountries(allCountries);
+
   } catch (err) {
     console.error("Erreur chargement pays :", err);
   }
+}
+
+// Fonction pour afficher les pays 
+function displayCountries(countries) {
+  countrySelect.innerHTML =
+    '<option value="">-- Sélectionner un pays --</option>';
+
+  countries.forEach(c => {
+    const opt = document.createElement("option");
+
+    opt.value = c.cca3;
+    opt.textContent = c.translations.fra.common;
+
+    opt.dataset.capital = c.capital ? c.capital[0] : "N/A";
+    opt.dataset.population = c.population;
+    opt.dataset.currency = c.currencies
+      ? Object.keys(c.currencies).join(", ")
+      : "N/A";
+    opt.dataset.flag = c.flags?.png || "";
+
+    countrySelect.appendChild(opt);
+  });
 }
 
 loadCountries();
@@ -52,3 +75,17 @@ countrySelect.addEventListener("change", () => {
 
   infoDiv.classList.remove("hidden");
 });
+
+
+searchInput.addEventListener("input", () => {
+  const searchValue = searchInput.value.toLowerCase();
+
+  const filteredCountries = allCountries.filter(country =>
+    country.translations.fra.common
+      .toLowerCase()
+      .includes(searchValue)
+  );
+
+  displayCountries(filteredCountries);
+});
+
