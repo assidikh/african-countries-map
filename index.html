@@ -9,11 +9,10 @@
   <div class="container">
     <h1>Carte interactive des pays africains</h1>
 
-    <label for="country">Sélectionner un pays</label>
-    <select id="country"></select>
-
-    <label for="search">Rechercher un pays</label>
-    <input type="text" id="search" placeholder="Ex: Tchad, Mali, Kenya...">
+    <div class="dropdown">
+      <input type="text" id="search" placeholder="Rechercher un pays africain" autocomplete="off"/>
+      <ul id="country-list" class="dropdown-list hidden"></ul>
+    </div>
 
 
     <div id="info" class="card hidden">
