@@ -8,6 +8,7 @@ const flagImg = document.getElementById("flag");
 const capitalSpan = document.getElementById("capital");
 const populationSpan = document.getElementById("population");
 const currencySpan = document.getElementById("currency");
+const mapLink = document.getElementById("map-link");
 
 let allCountries = [];
 
@@ -48,6 +49,9 @@ function showCountryInfo(country) {
     : "N/A";
 
   infoDiv.classList.remove("hidden");
+
+  mapLink.href = country.maps.googleMaps;
+  mapLink.classList.remove("hidden");
 }
 
 loadCountries();
